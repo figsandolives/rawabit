@@ -1,13 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl" class="h-full">
- <head>
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>منشئ الروابط</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <script src="/_sdk/element_sdk.js"></script>
   <style>
     body {
@@ -16,13 +16,14 @@
     }
     
     .gradient-bg {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
     }
     
     .card-glass {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     }
     
     .input-glow:focus {
@@ -37,18 +38,18 @@
     .btn-gradient:hover {
       background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
       transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
     }
     
     .link-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(99, 102, 241, 0.2);
       transition: all 0.3s ease;
     }
     
     .link-card:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(99, 102, 241, 0.3);
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(99, 102, 241, 0.4);
     }
     
     .pulse-dot {
@@ -87,88 +88,132 @@
     }
     
     ::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(0, 0, 0, 0.05);
     }
     
     ::-webkit-scrollbar-thumb {
-      background: rgba(99, 102, 241, 0.5);
+      background: rgba(99, 102, 241, 0.4);
       border-radius: 4px;
     }
   </style>
-  <style>@view-transition { navigation: auto; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full gradient-bg text-white overflow-auto">
-  <div class="min-h-full w-full p-4 md:p-8"><!-- Toast Container -->
-   <div id="toast-container" class="fixed top-4 left-4 z-50 flex flex-col gap-2"></div><!-- Header -->
-   <header class="text-center mb-8 fade-in">
-    <div class="inline-flex items-center gap-3 mb-4">
-     <svg class="w-12 h-12 text-indigo-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-     </svg>
-     <h1 id="site-title" class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">منشئ الروابط</h1>
-    </div>
-    <p class="text-gray-400 text-lg">أنشئ روابط مختصرة وتتبع عدد النقرات بسهولة</p>
-   </header><!-- Main Card -->
-   <main class="max-w-2xl mx-auto"><!-- Create Link Section -->
-    <div class="card-glass rounded-2xl p-6 md:p-8 mb-6 fade-in">
-     <div class="flex items-center gap-2 mb-6">
-      <div class="w-2 h-2 rounded-full bg-indigo-500 pulse-dot"></div>
-      <h2 class="text-xl font-semibold">إنشاء رابط جديد</h2>
-     </div>
-     <div class="space-y-4">
-      <div class="relative"><input type="url" id="url-input" placeholder="الصق الرابط هنا..." class="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none input-glow transition-all text-right">
-       <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-       </svg>
-      </div><button id="create-btn" onclick="createLink()" class="w-full btn-gradient text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2">
-       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-       </svg><span id="create-btn-text">إنشاء رابط</span> </button>
-     </div>
-    </div><!-- Links List Section -->
-    <div class="card-glass rounded-2xl p-6 md:p-8 fade-in">
-     <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-2">
-       <div class="w-2 h-2 rounded-full bg-green-500 pulse-dot"></div>
-       <h2 class="text-xl font-semibold">الروابط المنشأة</h2>
-      </div><span id="links-count" class="text-sm text-gray-400 bg-white/5 px-3 py-1 rounded-full">0 روابط</span>
-     </div>
-     <div id="links-container" class="space-y-3"><!-- Links will be rendered here -->
-      <div id="empty-state" class="text-center py-12">
-       <svg class="w-16 h-16 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-       </svg>
-       <p class="text-gray-500">لا توجد روابط بعد</p>
-       <p class="text-gray-600 text-sm mt-1">أنشئ أول رابط لك الآن!</p>
+</head>
+<body class="h-full gradient-bg text-gray-800 overflow-auto">
+  <div class="min-h-full w-full p-4 md:p-8">
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed top-4 left-4 z-50 flex flex-col gap-2"></div>
+    
+    <!-- Header -->
+    <header class="text-center mb-8 fade-in">
+      <div class="inline-flex items-center gap-3 mb-4">
+        <svg class="w-12 h-12 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+        </svg>
+        <h1 id="site-title" class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          منشئ الروابط
+        </h1>
       </div>
-     </div>
-    </div><!-- Stats Section -->
-    <div class="mt-6 grid grid-cols-2 gap-4 fade-in">
-     <div class="card-glass rounded-xl p-4 text-center">
-      <p class="text-3xl font-bold text-indigo-400" id="total-links">0</p>
-      <p class="text-gray-400 text-sm mt-1">إجمالي الروابط</p>
-     </div>
-     <div class="card-glass rounded-xl p-4 text-center">
-      <p class="text-3xl font-bold text-green-400" id="total-clicks">0</p>
-      <p class="text-gray-400 text-sm mt-1">إجمالي النقرات</p>
-     </div>
-    </div>
-   </main><!-- Footer -->
-   <footer class="text-center mt-8 text-gray-500 text-sm">
-    <p>صنع بـ ❤️ لتسهيل مشاركة الروابط</p>
-   </footer>
-  </div><!-- Delete Confirmation Modal -->
-  <div id="delete-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-   <div class="bg-gray-800 rounded-2xl p-6 max-w-sm w-full border border-white/10">
-    <div class="text-center">
-     <div class="w-16 h-16 mx-auto bg-red-500/20 rounded-full flex items-center justify-center mb-4">
-      <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-      </svg>
-     </div>
-     <h3 class="text-xl font-semibold mb-2">حذف الرابط؟</h3>
-     <p class="text-gray-400 mb-6">هل أنت متأكد من حذف هذا الرابط؟ لا يمكن التراجع عن هذا الإجراء.</p>
-     <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 bg-white/10 hover:bg-white/20 text-white font-medium py-3 px-4 rounded-xl transition-all"> إلغاء </button> <button onclick="confirmDelete()" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-xl transition-all"> حذف </button>
-     </div>
-    </div>
-   </div>
+      <p class="text-gray-600 text-lg">أنشئ روابط مختصرة وتتبع عدد النقرات بسهولة</p>
+    </header>
+    
+    <!-- Main Card -->
+    <main class="max-w-2xl mx-auto">
+      <!-- Create Link Section -->
+      <div class="card-glass rounded-2xl p-6 md:p-8 mb-6 fade-in">
+        <div class="flex items-center gap-2 mb-6">
+          <div class="w-2 h-2 rounded-full bg-indigo-600 pulse-dot"></div>
+          <h2 class="text-xl font-semibold text-gray-800">إنشاء رابط جديد</h2>
+        </div>
+        
+        <div class="space-y-4">
+          <div class="relative">
+            <input 
+              type="url" 
+              id="url-input" 
+              placeholder="الصق الرابط هنا..."
+              class="w-full bg-white border border-gray-200 rounded-xl px-5 py-4 text-gray-800 placeholder-gray-400 focus:outline-none input-glow transition-all text-right"
+            >
+            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+            </svg>
+          </div>
+          
+          <button 
+            id="create-btn"
+            onclick="createLink()"
+            class="w-full btn-gradient text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            <span id="create-btn-text">إنشاء رابط</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Links List Section -->
+      <div class="card-glass rounded-2xl p-6 md:p-8 fade-in">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-green-600 pulse-dot"></div>
+            <h2 class="text-xl font-semibold text-gray-800">الروابط المنشأة</h2>
+          </div>
+          <span id="links-count" class="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">0 روابط</span>
+        </div>
+        
+        <div id="links-container" class="space-y-3">
+          <!-- Links will be rendered here -->
+          <div id="empty-state" class="text-center py-12">
+            <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            <p class="text-gray-500">لا توجد روابط بعد</p>
+            <p class="text-gray-400 text-sm mt-1">أنشئ أول رابط لك الآن!</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Stats Section -->
+      <div class="mt-6 grid grid-cols-2 gap-4 fade-in">
+        <div class="card-glass rounded-xl p-4 text-center">
+          <p class="text-3xl font-bold text-indigo-600" id="total-links">0</p>
+          <p class="text-gray-600 text-sm mt-1">إجمالي الروابط</p>
+        </div>
+        <div class="card-glass rounded-xl p-4 text-center">
+          <p class="text-3xl font-bold text-green-600" id="total-clicks">0</p>
+          <p class="text-gray-600 text-sm mt-1">إجمالي النقرات</p>
+        </div>
+      </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="text-center mt-8 text-gray-500 text-sm">
+      <p>صنع بـ ❤️ لتسهيل مشاركة الروابط</p>
+    </footer>
   </div>
+  
+  <!-- Delete Confirmation Modal -->
+  <div id="delete-modal" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-6 max-w-sm w-full border border-gray-200 shadow-lg">
+      <div class="text-center">
+        <div class="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center mb-4">
+          <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">حذف الرابط؟</h3>
+        <p class="text-gray-600 mb-6">هل أنت متأكد من حذف هذا الرابط؟ لا يمكن التراجع عن هذا الإجراء.</p>
+        <div class="flex gap-3">
+          <button onclick="closeDeleteModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-3 px-4 rounded-xl transition-all">
+            إلغاء
+          </button>
+          <button onclick="confirmDelete()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-xl transition-all">
+            حذف
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Firebase Configuration
     const firebaseConfig = {
@@ -320,7 +365,7 @@
 
     // Copy link to clipboard
     async function copyLink(shortId) {
-      const shortUrl = `${window.location.origin}/r/${shortId}`;
+      const shortUrl = getRedirectLink(shortId);
       try {
         await navigator.clipboard.writeText(shortUrl);
         showToast('تم نسخ الرابط!', 'success');
@@ -403,6 +448,11 @@
       window.open(originalUrl, '_blank', 'noopener,noreferrer');
     }
 
+    // Get shareable redirect link
+    function getRedirectLink(shortId) {
+      return `https://figsandolives.github.io/rawabit/?id=${shortId}`;
+    }
+
     // Render links
     function renderLinks() {
       const container = document.getElementById('links-container');
@@ -435,7 +485,7 @@
       
       // Update or create cards
       links.forEach((link, index) => {
-        const shortUrl = `${window.location.origin}/r/${link.shortId}`;
+        const shortUrl = getRedirectLink(link.shortId);
         const displayUrl = link.originalUrl.length > 40 
           ? link.originalUrl.substring(0, 40) + '...' 
           : link.originalUrl;
@@ -462,10 +512,10 @@
                     <span class="clicks-count">${link.clicks || 0}</span> نقرة
                   </span>
                 </div>
-                <p class="text-gray-400 text-sm truncate mb-1" title="${link.originalUrl}">${displayUrl}</p>
+                <p class="text-gray-600 text-sm truncate mb-1" title="${link.originalUrl}">${displayUrl}</p>
                 <button 
                   onclick="openLink('${link.id}', '${link.originalUrl.replace(/'/g, "\\'")}')"
-                  class="text-indigo-400 hover:text-indigo-300 text-sm font-medium flex items-center gap-1 transition-colors"
+                  class="text-indigo-600 hover:text-indigo-700 text-sm font-medium flex items-center gap-1 transition-colors"
                 >
                   <span>${link.shortId}</span>
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -476,28 +526,28 @@
               <div class="flex items-center gap-2">
                 <button 
                   onclick="copyOriginalUrl('${link.originalUrl.replace(/'/g, "\\'")}')"
-                  class="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                  class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
                   title="نسخ الرابط الأصلي"
                 >
-                  <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
                   </svg>
                 </button>
                 <button 
                   onclick="copyLink('${link.shortId}')"
-                  class="p-2 bg-indigo-500/20 hover:bg-indigo-500/30 rounded-lg transition-colors"
+                  class="p-2 bg-indigo-100 hover:bg-indigo-200 rounded-lg transition-colors"
                   title="نسخ الرابط المختصر"
                 >
-                  <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                   </svg>
                 </button>
                 <button 
                   onclick="showDeleteModal('${link.id}')"
-                  class="p-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg transition-colors"
+                  class="p-2 bg-red-100 hover:bg-red-200 rounded-lg transition-colors"
                   title="حذف"
                 >
-                  <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                   </svg>
                 </button>
@@ -543,5 +593,5 @@
       }
     });
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9cb2943010f97cd8',t:'MTc3MDYzMTg0Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
